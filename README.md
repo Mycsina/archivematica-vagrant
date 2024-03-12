@@ -24,19 +24,32 @@ The aim is to be able to just clone this repo and run the instructions to have a
 ## Troubleshooting
 
 ### Vagrant up fails
-If you get an error complaining about VirtualBox:
+#### VirtualBox
+  If you get an error complaining about VirtualBox:
+    ```
+    The provider 'virtualbox' that was requested to back the machine
+    'default' is reporting that it isn't usable on this system. The
+    reason is shown below:
+    ```
+  
+  You may need to load the VirtualBox kernel modules.
+    ```
+    sudo modprobe vboxdrv vboxnetadp vboxnetflt
+    ```
+  
+  If the modules are not installed, you can install them with:
+  
+    - Debian/Ubuntu: `sudo apt-get install virtualbox-dkms`
+    - Arch: `sudo pacman -S virtualbox-host-dkms`
+
+#### Invalid Range
   ```
-  The provider 'virtualbox' that was requested to back the machine
-  'default' is reporting that it isn't usable on this system. The
-  reason is shown below:
+  The IP address configured for the host-only network is not within the allowed ranges...
   ```
 
-You may need to load the VirtualBox kernel modules.
+  You have to write
   ```
-  sudo modprobe vboxdrv vboxnetadp vboxnetflt
+  sudo cat "* 10.0.0.0/8" > /etc/vbox/networks.conf
   ```
-
-If the modules are not installed, you can install them with:
-
-  - Debian/Ubuntu: `sudo apt-get install virtualbox-dkms`
-  - Arch: `sudo pacman -S virtualbox-host-dkms`
+#### VBoxManage: error: Virtual Box can't enable the AMD-V extension
+  This happens if you are already running Docker. Please close it and try again
